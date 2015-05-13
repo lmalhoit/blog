@@ -13,3 +13,4 @@ class Post(Base):
     datetime = Column(DateTime, default=datetime.datetime.now)
 
 Base.metadata.create_all(engine)
+
