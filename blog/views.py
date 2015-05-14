@@ -43,6 +43,11 @@ def posts(page=1, paginate_by=10):
         total_pages=total_pages
     )
 
+#route to see only one post by clicking on title
+@app.route("/post/<id>", methods=["GET"])
+def one_post():
+	return render_post("one_post.html")
+
 @app.route("/post/add", methods=["GET"])
 def add_post_get():
     return render_template("add_post.html")
