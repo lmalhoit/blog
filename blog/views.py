@@ -45,8 +45,11 @@ def posts(page=1, paginate_by=10):
 
 #route to see only one post by clicking on title
 @app.route("/post/<id>", methods=["GET"])
-def one_post():
-	return render_post("one_post.html")
+def one_post(id):
+	post = session.query(Post).get(id)
+	return render_template("one_post.html",
+		post=post)
+
 
 @app.route("/post/add", methods=["GET"])
 def add_post_get():
@@ -61,4 +64,19 @@ def add_post_post():
     session.add(post)
     session.commit()
     return redirect(url_for("posts"))
+
+@app.route("/post/<id>/edit", methods=["GET"])
+def edit_post_get(id):
+	post = session.query(Post).get(id)
+	return render_template("edit_post.html")
+
+@app.route("/post/<id>/edit", methods=["PUT"])
+def edit_post_put(id):
+	post = Post(
+		title=request.form["title"],
+		content=mistune.markdown(request.form["content"]),
+		)
+	session.add(post)
+	session.commit()
+	return redirect(url_for("one_post", post=post))
 
