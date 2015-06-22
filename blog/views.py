@@ -102,3 +102,14 @@ def delete_post(id):
     #If user cancels, just redirect to "edit_post_put(id)"
 
 
+@app.route("/post/<id>/edit", methods=["PUT"])
+def edit_post_put(id):
+	post = Post(
+		title=request.form["title"],
+		content=mistune.markdown(request.form["content"]),
+		)
+	session.add(post)
+	session.commit()
+	return redirect(url_for("one_post", post=post))
+
+
