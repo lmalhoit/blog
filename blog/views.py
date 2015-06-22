@@ -83,6 +83,9 @@ def edit_post_put(id):
     #Redirecting our app to another route - posts.html
     return redirect(url_for("posts"))
 
+@app.route("/post/<id>/confirm", methods=["GET"])
+def confirm(id):
+    return render_template("confirm.html", postid=id)
 
 @app.route("/post/<id>/delete", methods=["GET"])
 def delete_post(id):
