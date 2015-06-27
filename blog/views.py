@@ -12,6 +12,8 @@ from flask.ext.login import login_user
 from werkzeug.security import check_password_hash
 from .models import User
 
+from flask.ext.login import login_required, current_user
+
 #@app.route("/")
 #def posts():
 #    posts = session.query(Post)
@@ -57,10 +59,12 @@ def one_post(id):
 
 
 @app.route("/post/add", methods=["GET"])
+@login_required
 def add_post_get():
     return render_template("add_post.html")
 
 @app.route("/post/add", methods=["POST"])
+@login_required
 def add_post_post():
     post = Post(
         title=request.form["title"],
