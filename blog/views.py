@@ -7,6 +7,11 @@ from .models import Post
 import mistune
 from flask import request, redirect, url_for
 
+from flask import flash
+from flask.ext.login import login_user
+from werkzeug.security import check_password_hash
+from .models import User
+
 #@app.route("/")
 #def posts():
 #    posts = session.query(Post)
@@ -102,14 +107,20 @@ def delete_post(id):
     #If user cancels, just redirect to "edit_post_put(id)"
 
 
-@app.route("/post/<id>/edit", methods=["PUT"])
-def edit_post_put(id):
-	post = Post(
-		title=request.form["title"],
-		content=mistune.markdown(request.form["content"]),
-		)
-	session.add(post)
-	session.commit()
-	return redirect(url_for("one_post", post=post))
+@app.route("/login", methods=["GET"])
+def login_get():
+    return render_template("login.html")
+
+@app.route("/login", methods=["POST"])
+def login_post():
+    email = request.form["email"]
+    password = request.form["password"]
+    user = session.query(User).filter_by(email=email).first()
+    if not user or not check_password_hash(user.password, password):
+        flash("Incorrect username or password", "danger")
+        return redirect(url_for("login_get"))
+
+    login_user(user)
+    return redirect(request.args.get('next') or url_for("posts"))
 
 

@@ -2,8 +2,8 @@
 {% extends "base.html" %}
 {% block content %}
 {{macros.render_post(post)}}
-<a href="{{ url_for('edit_post_get', id=post.id) }}">Edit</a>
-<a href="{{ url_for('confirm', id=post.id) }}">Delete</a>
+<a href="{{ url_for('edit_post_get', id=post.id) }}" class="btn btn-default">Edit</a>
+<a href="{{ url_for('confirm', id=post.id) }}" class="btn btn-default">Delete</a>
 {% endblock %}
 
 
