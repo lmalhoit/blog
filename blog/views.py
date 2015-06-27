@@ -12,7 +12,8 @@ from flask.ext.login import login_user
 from werkzeug.security import check_password_hash
 from .models import User
 
-from flask.ext.login import login_required, current_user
+from flask.ext.login import login_required, current_user, logout_user
+
 
 #@app.route("/")
 #def posts():
@@ -69,18 +70,27 @@ def add_post_post():
     post = Post(
         title=request.form["title"],
         content=mistune.markdown(request.form["content"]),
+        author=current_user
     )
     session.add(post)
     session.commit()
     return redirect(url_for("posts"))
 
 @app.route("/post/<id>/edit", methods=["GET"])
+@login_required
 def edit_post_get(id):
-	post = session.query(Post).get(id)
-    #Building a view using render_template which is using edit_post.html to build the view and passing the argument post
-	return render_template("edit_post.html", post=post)
+    post = session.query(Post).get(id)
+   #Building a view using render_template which is using edit_post.html to build the view and passing the argument post
+   #Tryng to see if the current_user is the same as the author. If so, should allow edit, if not redirects to login
+   #Why is post.author?
+    if post.author == current_user:
+       return render_template("edit_post.html", post=post)
+    else:
+        return redirect(url_for("login_get"))
+
 
 @app.route("/post/<id>/edit", methods=["POST"])
+@login_required
 def edit_post_put(id):
     #Retrieving the post with id
     post = session.query(Post).get(id)
@@ -97,18 +107,22 @@ def confirm(id):
     return render_template("confirm.html", postid=id)
 
 @app.route("/post/<id>/delete", methods=["GET"])
+@login_required
 def delete_post(id):
     #Retrieve the post with ID
     post = session.query(Post).get(id)
     #Use session.delete to delete the post we just retrieved with variable post
-    session.delete(post)
+    if post.author == current_user:
+        session.delete(post)
     #Give a prompt to either confirm or cancel the delete
     #If user confirms, do the session.commit()
     #Commit the session
-    session.commit()
+        session.commit()
     #Redirect back to the main posts site
-    return redirect(url_for("posts"))
+        return redirect(url_for("posts"))
     #If user cancels, just redirect to "edit_post_put(id)"
+    else:
+        return redirect(url_for("posts"))
 
 
 @app.route("/login", methods=["GET"])
@@ -127,4 +141,9 @@ def login_post():
     login_user(user)
     return redirect(request.args.get('next') or url_for("posts"))
 
+@app.route("/logout")
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for("posts"))
 

@@ -1,7 +1,9 @@
 {% import "macros.html" as macros %}
 {% extends "base.html" %}
 {% block content %}
-
+<a href="{{ url_for('login_post') }}" class="btn btn-default">Login</a>
+<a href="{{ url_for('add_post_get') }}" class="btn btn-default">Add Post</a>
+<a href="{{ url_for('logout') }}" class="btn btn-default">Logout</a>
 {% for post in posts %}
 {{ macros.render_post(post) }}
 {% endfor %}
@@ -18,5 +20,7 @@
     </li>
     {% endif %}
 </ul>
+
+
 
 {% endblock %}
