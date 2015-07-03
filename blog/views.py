@@ -62,6 +62,7 @@ def one_post(id):
 @app.route("/post/add", methods=["GET"])
 @login_required
 def add_post_get():
+    print "hello"
     return render_template("add_post.html")
 
 @app.route("/post/add", methods=["POST"])
@@ -74,6 +75,7 @@ def add_post_post():
     )
     session.add(post)
     session.commit()
+
     return redirect(url_for("posts"))
 
 @app.route("/post/<id>/edit", methods=["GET"])
@@ -83,6 +85,7 @@ def edit_post_get(id):
    #Building a view using render_template which is using edit_post.html to build the view and passing the argument post
    #Tryng to see if the current_user is the same as the author. If so, should allow edit, if not redirects to login
    #Why is post.author?
+    print post.__dict__
     if post.author == current_user:
        return render_template("edit_post.html", post=post)
     else:
