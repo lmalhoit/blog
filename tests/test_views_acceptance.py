@@ -24,7 +24,7 @@ class TestViews(unittest.TestCase):
 
         # Create an example user
         self.user = models.User(name="Alice", email="alice@example.com",
-                                password=generate_password_hash("test"))
+                                password="wonderland")
         session.add(self.user)
         session.commit()
 
